@@ -1,0 +1,101 @@
+Hadoop：HDFS MapReduce
+架构在底层的Hadoop核心组件基础之上
+hive本身并不支持数据的存储和处理，提供一个编程接口
+hive 依赖分布式文件系统HDFS存储数据
+     依赖分布式并行计算机模型MapReduce处理数据
+    
+hive把HiveQL语句转换成MapReduce任务进行运行
+
+DataWarehouse：静态数据
+
+hive---采用批处理方式处理海量数据
+hive提供了一系列对数据进行提取、转换、加载（ETL）的工具
+
+Pig 主要用于DataWarehouse的ETL环节
+HBase：支持实时交互式查询分析，在线业务
+Mahout:BI--商务智能 应用
+
+hive---只支持批量导入
+    ---静态数据，不支持数据更新
+    ---延迟高
+    ---扩展性好
+    ---支持分区
+    ---支持索引
+    
+hive对外访问接口:
+--CLI (一种命令行工具)
+--HWI(hive web interface)，web接口
+--JDBC和ODBC
+--Thrift Server 基于Thrift架构开发的接口，允许外界通过这个接口，实现对hive的RPC调用
+
+驱动模块（Driver）包含编译器、优化器、执行器--负责把HiveQL语句转换成一系列MapReduce作业
+
+元数据存储模块（Metastore）是一个独立的关系型数据库
+
+hive数据类型
+tinyint   1个字节 8位 有符号整数 1
+smallint   2个字节 16位 有符号整数 1
+int       4个字节 32位 有符号整数 1
+bigint     8个字节 64位 有符号整数 1
+float     4个字节 32位 有符号整数 1.0
+double    8个字节 64位 有符号整数 1.0
+boolean 
+string    字符串，可以指定字符集
+timestamp 整数、浮点数、或者字符串    1327882394 （Unix新纪元秒）
+binary    字节数组
+集合数据类型：array、map、struct
+
+创建数据库、表、视图
+#创建数据库hive
+hive>create database hive;
+#再次创建抛出异常
+加上 if not exists 关键字，则不会抛出异常
+hive>create database hive if not exists hive;
+#创建表
+hive>use hive
+hive>create table if not exists usr(id bigint,name string,age int);
+#给创建的表并指定存储路径
+hive>create table if not exists usr(id bigint,name string,age int)
+    >location '/usr/local/hive/warehouse/hive/usr';
+    
+ #创建视图
+ hive>create view little_usr as select id,age  from usr;
+ 
+ #查看hive中包含的所有数据库
+ hive>show databases;
+ #查看hive中以h开头的所有数据库
+ hive>show databases like 'h.*';
+ 
+ #查看数据库中所有的表和视图
+ hive>use hive;
+ hive>show tables;
+ 
+ #查看数据库hive中以u开头的所有的表和视图
+ hive>show tables in hive like 'u.*';
+ 
+#把目录'/usr/local/data'下的数据文件的数据装载进usr表并覆盖原有数据
+              本地文件
+hive>load data local inpath '/usr/local/data' overwrite into table usr;
+
+hive>load data local inpath '/usr/local/data'  into table usr;  --不覆盖原有数据
+ 
+ 
+#把分布式文件系统目录'hdfs://master_server/usr/local/data'下的数据文件数据装载进usr表并覆盖原有数据(非本地数据)
+hive>load data inpath 'hdfs://master_server/usr/local/data' overwrite into table usr;
+
+#向usr1表中插入来着usr表中的数据并覆盖原有数据
+hive>insert overwrite table usr1 select * from usr where age=10;
+
+#向usr1表中插入来着usr表中的数据并追加在原有数据后面
+
+hive>insert  table usr1 select * from usr where age=10;
+
+
+
+
+
+
+
+
+
+
