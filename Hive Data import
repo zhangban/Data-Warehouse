@@ -1,0 +1,26 @@
+load
+语法：
+loacl：表示从操作系统的目录上进行数据的导入
+如果不写local表示从HDFS的目录上进行数据导入
+inpath:指明导入的路径
+如果是分区表可以用partiton指明数据导入到那个分区，后面是分区的条件
+
+load data [local] inpath 'filepath' [overwrite]
+into table tablename [partition] (partcol1=vall,partcol2=val2 ...)
+
+将student01.txt导入到t2
+load data local inpath '/root/data/student01.txt' into t2
+ 
+将/root/data下的所有数据文件导入到t3表中，并覆盖原来数据
+load data local inpath '/root/data/' overwrite into t3
+
+将HDFS中，/inpath/student01.txt 导入到t3
+load data inpath '/input/student01.txt' overwrite into table t3;
+
+
+将数据导入分区
+按照性别进行分区
+
+ 
+
+
